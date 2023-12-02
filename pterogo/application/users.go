@@ -1,6 +1,14 @@
 package application
 
-type Users struct {
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+)
+
+type User struct {
 	Object     string `json:"object"`
 	Attributes struct {
 		ID         int    `json:"id"`
@@ -18,7 +26,48 @@ type Users struct {
 	} `json:"attributes"`
 }
 
-// UsersApplication is a client for the Nodes API
+// UsersApplication is a client for the Users API
 type UsersApplication struct {
-	client *Application
+	application *Application
+}
+
+// GetByID retrived the user by its ID.
+func (a *UsersApplication) GetByID(ctx context.Context, id int64) (*User, *http.Response, error) {
+	url := a.application.endpoint + fmt.Sprintf("users/%d", id)
+
+	method := "GET"
+
+	client := &http.Client{}
+	req, err := http.NewRequest(method, url, nil)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", a.application.token))
+
+	res, err := client.Do(req)
+	if err != nil {
+		return nil, nil, err
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != 200 {
+		return nil, res, fmt.Errorf("%s", res.Status)
+	}
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return nil, res, err
+	}
+
+	var userData User
+	err = json.Unmarshal(body, &userData)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return &userData, req.Response, nil
 }

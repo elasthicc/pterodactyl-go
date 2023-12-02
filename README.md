@@ -1,10 +1,24 @@
 # pterogo: A Go library for the Pterodactyl API
+![pterogo-maskot](media/pterogo_maskot.png)
+
 Package pterogo is a library for the Pterodactyl API.
 
 ## Example
+```golang
+func main() {
+	pteroApp := application.NewApplication(application.WithEndpoint(url), application.WithToken(token))
+
+	user, _, err := pteroApp.Users.GetByID(context.Background(), 1)
+	if err != nil {
+		log.Fatalf("error retirving user: %s\n", err)
+	}
+
+	fmt.Printf("user email is: %s\n", user.Attributes.Email)
+}
+```
 
 ## Pterodactyl API Version Support
-The library supports the [Pterodactyl v1 API](https://dashflo.net/docs/api/pterodactyl/v1/)
+The library supports the [Pterodactyl v1 API](https://dashflo.net/docs/api/pterodactyl/v1/).
 
 ## Go Version Support
 The library supports the latest two Go minor versions, e.g. at the time Go 1.21 is released, it supports Go 1.20 and 1.21.
