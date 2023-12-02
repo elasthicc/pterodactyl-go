@@ -1,4 +1,4 @@
-package application
+package pteroapp
 
 // Servers represents the servers in the Pterodactyl panel
 type Servers struct {

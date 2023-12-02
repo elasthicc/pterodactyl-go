@@ -1,4 +1,4 @@
-package application
+package pteroapp
 
 type Locations struct {
 }

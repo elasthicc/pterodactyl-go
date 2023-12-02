@@ -6,7 +6,7 @@ Package pterogo is a library for the Pterodactyl API.
 ## Example
 ```golang
 func main() {
-	pteroApp := application.NewApplication(application.WithEndpoint(url), application.WithToken(token))
+	pteroApp := pteroapp.NewApplication(pteroapp.WithEndpoint(url), pteroapp.WithToken(token))
 
 	user, _, err := pteroApp.Users.GetByID(context.Background(), 1)
 	if err != nil {
