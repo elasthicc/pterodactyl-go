@@ -1,6 +1,7 @@
 package pteroapp
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -27,12 +28,20 @@ type User struct {
 }
 
 // UsersApplication is a client for the Users API
-type UsersApplication struct {
+type UserApplication struct {
 	application *Application
 }
 
-// GetByID retrived the user by its ID.
-func (a *UsersApplication) GetByID(ctx context.Context, id int64) (*User, *http.Response, error) {
+// UserCreateOpts represents the options for creating a new user.
+type UserCreateOpts struct {
+	Email     string `json:"email"`
+	Username  string `json:"username"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+}
+
+// GetByID retrives the user by its ID.
+func (a *UserApplication) GetByID(ctx context.Context, id int64) (*User, *http.Response, error) {
 	url := a.application.endpoint + fmt.Sprintf("users/%d", id)
 
 	method := "GET"
@@ -70,4 +79,42 @@ func (a *UsersApplication) GetByID(ctx context.Context, id int64) (*User, *http.
 	}
 
 	return &userData, req.Response, nil
+}
+
+// Create creates a user
+func (a *UserApplication) Create(opts UserCreateOpts) (User, *http.Response, error) {
+	url := a.application.endpoint + "users"
+	method := "POST"
+
+	jsonReq, err := json.Marshal(opts)
+	if err != nil {
+		return User{}, nil, err
+	}
+
+	client := &http.Client{}
+	req, err := http.NewRequest(method, url, bytes.NewBuffer(jsonReq))
+
+	if err != nil {
+		return User{}, nil, err
+	}
+
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", a.application.token))
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return User{}, nil, err
+	}
+	defer resp.Body.Close()
+
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return User{}, nil, err
+	}
+
+	var userResp User
+	json.Unmarshal(bodyBytes, &userResp)
+
+	return userResp, resp, nil
 }
