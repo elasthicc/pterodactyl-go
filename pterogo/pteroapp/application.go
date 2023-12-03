@@ -8,11 +8,11 @@ type Application struct {
 	endpoint string
 	token    string
 
-	Users     UsersApplication
-	Nodes     Nodes
-	Locations Locations
-	Servers   Servers
-	Nests     Nests
+	Users UserApplication
+	Nodes NodeApplication
+	//Locations Locations
+	Servers ServerApplication
+	//Nests     Nests
 }
 
 type ApplicationOption func(*Application)
@@ -36,7 +36,13 @@ func NewApplication(options ...ApplicationOption) *Application {
 		option(app)
 	}
 
-	app.Users = UsersApplication{
+	app.Users = UserApplication{
+		application: app,
+	}
+	app.Nodes = NodeApplication{
+		application: app,
+	}
+	app.Servers = ServerApplication{
 		application: app,
 	}
 
