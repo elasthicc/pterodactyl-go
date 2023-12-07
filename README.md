@@ -10,7 +10,7 @@ func main() {
 
 	user, _, err := pteroApp.Users.GetByID(context.Background(), 1)
 	if err != nil {
-		log.Fatalf("error retirving user: %s\n", err)
+		log.Fatalf("error retrieving user: %s\n", err)
 	}
 
 	fmt.Printf("user email is: %s\n", user.Attributes.Email)
