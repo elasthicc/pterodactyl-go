@@ -66,19 +66,19 @@ func (a *NodeApplication) GetByID(ctx context.Context, id int64) (*Node, *http.R
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", a.application.token))
 
-	res, err := client.Do(req)
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, nil, err
 	}
-	defer res.Body.Close()
+	defer resp.Body.Close()
 
-	if res.StatusCode != 200 {
-		return nil, res, fmt.Errorf("%s", res.Status)
+	if resp.StatusCode != 200 {
+		return nil, resp, fmt.Errorf("%s", resp.Status)
 	}
 
-	body, err := io.ReadAll(res.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, res, err
+		return nil, resp, err
 	}
 
 	var nodeData Node
@@ -87,7 +87,7 @@ func (a *NodeApplication) GetByID(ctx context.Context, id int64) (*Node, *http.R
 		return nil, nil, err
 	}
 
-	return &nodeData, req.Response, nil
+	return &nodeData, resp, nil
 }
 
 type NodeCreateOpts struct {
@@ -131,6 +131,10 @@ func (a *NodeApplication) Create(ctx context.Context, opts NodeCreateOpts) (Node
 		return Node{}, nil, err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return Node{}, resp, fmt.Errorf("%s", resp.Status)
+	}
 
 	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {

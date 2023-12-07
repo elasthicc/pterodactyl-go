@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 )
 
@@ -32,6 +31,25 @@ type UserApplication struct {
 	application *Application
 }
 
+// GetByID retrives the user by its ID.
+func (a *UserApplication) GetByID(ctx context.Context, id int64) (*User, *http.Response, error) {
+
+	req, err := a.application.NewRequest(ctx, http.MethodGet, fmt.Sprintf("users/%d", id), nil)
+
+	body, resp, err := a.application.Do(req)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	var userData User
+	err = json.Unmarshal(body, &userData)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return &userData, resp, nil
+}
+
 // UserCreateOpts represents the options for creating a new user.
 type UserCreateOpts struct {
 	Email     string `json:"email"`
@@ -40,81 +58,23 @@ type UserCreateOpts struct {
 	LastName  string `json:"last_name"`
 }
 
-// GetByID retrives the user by its ID.
-func (a *UserApplication) GetByID(ctx context.Context, id int64) (*User, *http.Response, error) {
-	url := a.application.endpoint + fmt.Sprintf("users/%d", id)
-
-	method := "GET"
-
-	client := &http.Client{}
-	req, err := http.NewRequest(method, url, nil)
-
-	if err != nil {
-		return nil, nil, err
-	}
-
-	req.Header.Add("Accept", "application/json")
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", a.application.token))
-
-	res, err := client.Do(req)
-	if err != nil {
-		return nil, nil, err
-	}
-	defer res.Body.Close()
-
-	if res.StatusCode != 200 {
-		return nil, res, fmt.Errorf("%s", res.Status)
-	}
-
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		return nil, res, err
-	}
-
-	var userData User
-	err = json.Unmarshal(body, &userData)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return &userData, req.Response, nil
-}
-
 // Create creates a user
-func (a *UserApplication) Create(opts UserCreateOpts) (User, *http.Response, error) {
-	url := a.application.endpoint + "users"
-	method := "POST"
-
+func (a *UserApplication) Create(ctx context.Context, opts UserCreateOpts) (*User, *http.Response, error) {
+	//
 	jsonReq, err := json.Marshal(opts)
 	if err != nil {
-		return User{}, nil, err
+		return nil, nil, err
 	}
 
-	client := &http.Client{}
-	req, err := http.NewRequest(method, url, bytes.NewBuffer(jsonReq))
+	req, err := a.application.NewRequest(ctx, http.MethodPost, "users", bytes.NewBuffer(jsonReq))
 
+	body, resp, err := a.application.Do(req)
 	if err != nil {
-		return User{}, nil, err
-	}
-
-	req.Header.Add("Accept", "application/json")
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", a.application.token))
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return User{}, nil, err
-	}
-	defer resp.Body.Close()
-
-	bodyBytes, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return User{}, nil, err
+		return nil, resp, err
 	}
 
 	var userResp User
-	json.Unmarshal(bodyBytes, &userResp)
+	json.Unmarshal(body, &userResp)
 
-	return userResp, resp, nil
+	return &userResp, resp, nil
 }
