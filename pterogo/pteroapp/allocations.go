@@ -1,9 +1,9 @@
 package pteroapp
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 )
 
@@ -37,33 +37,10 @@ type Allocations struct {
 }
 
 // ListAllocationsByID lists the allocations on a node by ID.
-func (a *NodeApplication) ListAllocationsByID(id int) (*Allocations, *http.Response, error) {
-	url := a.application.endpoint + fmt.Sprintf("nodes/%d/allocations", id)
+func (a *NodeApplication) ListAllocationsByID(ctx context.Context, id int) (*Allocations, *http.Response, error) {
+	req, err := a.application.NewRequest(ctx, http.MethodGet, fmt.Sprintf("nodes/%d/allocations", id), nil)
 
-	method := "GET"
-
-	client := &http.Client{}
-	req, err := http.NewRequest(method, url, nil)
-
-	if err != nil {
-		return nil, nil, err
-	}
-
-	req.Header.Add("Accept", "application/json")
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", a.application.token))
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != 200 {
-		return nil, resp, fmt.Errorf("%s", resp.Status)
-	}
-
-	body, err := io.ReadAll(resp.Body)
+	body, resp, err := a.application.Do(req)
 	if err != nil {
 		return nil, resp, err
 	}
