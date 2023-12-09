@@ -37,16 +37,22 @@ func TestUserAppCreate(t *testing.T) {
 	env := newTestEnv()
 	defer env.Teardown()
 
-	fmt.Println(env.Application.endpoint)
-
 	env.Mux.HandleFunc("/api/application/users", func(w http.ResponseWriter, r *http.Request) {
+		var reqBody UserCreateOpts
+		if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
+			t.Fatal(err)
+		}
+
+		if reqBody.Email != "pterogo@elasthi.cc" {
+			t.Errorf("unexpected email: %s", reqBody.Email)
+		}
 		testUser := User{}
 		testUser.Attributes.ID = 1
 		json.NewEncoder(w).Encode(testUser)
 	})
 
 	userOpts := UserCreateOpts{
-		Email:     "pterogo@example.com",
+		Email:     "pterogo@elasthi.cc",
 		Username:  "pterogo",
 		FirstName: "ptero",
 		LastName:  "go",
