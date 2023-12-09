@@ -41,7 +41,7 @@ When the minimum required Go version is changed, it is announced in the release 
 
 ## Contributing
 
-Gin is the work of hundreds of contributors. We appreciate your help!
+Pterogo is the work of hundreds of contributors. We appreciate your help!
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) for details on submitting patches and the contribution workflow.
 
