@@ -1,5 +1,13 @@
 # pterogo: A Go library for the Pterodactyl API
+
+[![Go Report Card](https://goreportcard.com/badge/github.com/elasthicc/pterodactyl-go)](https://goreportcard.com/report/github.com/elasthicc/pterodactyl-go)
+
 ![pterogo-maskot](media/pterogo_maskot.png)
+
+
+> **Note**: This library is under active development as we expand it to cover
+> the Pterodactyl API. Consider the public API of this package a little
+> unstable as we work towards a v1.0.
 
 Package pterogo is a library for the Pterodactyl API.
 
