@@ -18,6 +18,7 @@ const (
 	HTTPS Scheme = "https"
 )
 
+// Node represents a node in the Pterodactyl API.
 type Node struct {
 	Object     string `json:"object"`
 	Attributes struct {
@@ -44,7 +45,7 @@ type Node struct {
 	} `json:"attributes"`
 }
 
-// NodeApplication is a client for the Nodes API
+// NodeApplication is a client for the Nodes API.
 type NodeApplication struct {
 	application *Application
 }
@@ -90,6 +91,7 @@ func (a *NodeApplication) GetByID(ctx context.Context, id int64) (*Node, *http.R
 	return &nodeData, resp, nil
 }
 
+// NodeCreateOpts represents the options for creating a new node.
 type NodeCreateOpts struct {
 	Name               string `json:"name"`
 	LocationID         int    `json:"location_id"`
@@ -104,7 +106,7 @@ type NodeCreateOpts struct {
 	DaemonListen       int    `json:"daemon_listen"`
 }
 
-// Create creates a new node
+// Create creates a new node.
 func (a *NodeApplication) Create(ctx context.Context, opts NodeCreateOpts) (Node, *http.Response, error) {
 
 	url := a.application.endpoint + "nodes"

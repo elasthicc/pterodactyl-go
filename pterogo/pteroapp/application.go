@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// Application represents the /api/application/ client for the Pterodactyl API.
 type Application struct {
 	endpoint   string
 	token      string
@@ -22,18 +23,21 @@ type Application struct {
 
 type ApplicationOption func(*Application)
 
+// WithEndpoint configures an Application to use the specified API endpoint.
 func WithEndpoint(endpoint string) ApplicationOption {
 	return func(app *Application) {
 		app.endpoint = strings.TrimRight(endpoint, "/") + "/api/application/"
 	}
 }
 
+// WithToken configures an Application to use the specified token for authentication.
 func WithToken(token string) ApplicationOption {
 	return func(app *Application) {
 		app.token = token
 	}
 }
 
+// NewApplication creates a new Application client.
 func NewApplication(options ...ApplicationOption) *Application {
 	app := &Application{}
 

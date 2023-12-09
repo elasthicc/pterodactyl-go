@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-// Servers represents the servers in the Pterodactyl panel
+// Server represents a server in the Pterodactyl API.
 type Server struct {
 	Object     string `json:"object"`
 	Attributes struct {
@@ -137,7 +137,7 @@ type ServerCreateOpts struct {
 	Allocation    ServerAllocation    `json:"allocation"`
 }
 
-// Create creates a server
+// Create creates a new server.
 func (a *ServerApplication) Create(opts ServerCreateOpts) (Server, *http.Response, error) {
 	url := a.application.endpoint + "servers"
 	method := "POST"

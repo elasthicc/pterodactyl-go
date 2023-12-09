@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-// Allocation represents an allocation in the API response.
+// Allocation represents an allocation in the Pterodactyl API.
 type Allocation struct {
 	Object     string `json:"object"`
 	Attributes struct {
@@ -20,7 +20,7 @@ type Allocation struct {
 	} `json:"attributes"`
 }
 
-// Allocations represents a list of allocations in the API response.
+// Allocations represents a list of allocations in the pterodactyl API.
 type Allocations struct {
 	Object string       `json:"object"`
 	Data   []Allocation `json:"data"`
@@ -36,7 +36,7 @@ type Allocations struct {
 	} `json:"meta"`
 }
 
-// ListAllocationsByID lists the allocations on a node by ID
+// ListAllocationsByID lists the allocations on a node by ID.
 func (a *NodeApplication) ListAllocationsByID(id int) (*Allocations, *http.Response, error) {
 	url := a.application.endpoint + fmt.Sprintf("nodes/%d/allocations", id)
 

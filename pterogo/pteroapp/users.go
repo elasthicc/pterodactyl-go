@@ -8,6 +8,7 @@ import (
 	"net/http"
 )
 
+// User represents a user in the Pterodactyl API.
 type User struct {
 	Object     string `json:"object"`
 	Attributes struct {
@@ -26,7 +27,7 @@ type User struct {
 	} `json:"attributes"`
 }
 
-// UsersApplication is a client for the Users API
+// UsersApplication is a client for the Users Pterodactyl API.
 type UserApplication struct {
 	application *Application
 }
@@ -50,7 +51,7 @@ func (a *UserApplication) GetByID(ctx context.Context, id int64) (*User, *http.R
 	return &userData, resp, nil
 }
 
-// UserCreateOpts represents the options for creating a new user.
+// UserCreateOpts specifies options for creating a new user.
 type UserCreateOpts struct {
 	Email     string `json:"email"`
 	Username  string `json:"username"`
@@ -58,7 +59,7 @@ type UserCreateOpts struct {
 	LastName  string `json:"last_name"`
 }
 
-// Create creates a user
+// Create creates a new user.
 func (a *UserApplication) Create(ctx context.Context, opts UserCreateOpts) (*User, *http.Response, error) {
 	//
 	jsonReq, err := json.Marshal(opts)
