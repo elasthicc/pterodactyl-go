@@ -1,6 +1,9 @@
 # pterogo: A Go library for the Pterodactyl API
 
+[![Test and coverage](https://github.com/elasthicc/pterodactyl-go/actions/workflows/codeql-analysis.yml/badge.svg?branch=main)](https://github.com/elasthicc/pterodactyl-go/actions/workflows/codeql-analysis.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/elasthicc/pterodactyl-go)](https://goreportcard.com/report/github.com/elasthicc/pterodactyl-go)
+[![codecov](https://codecov.io/gh/elasthicc/pterodactyl-go/graph/badge.svg?token=EIHRXJ7TYJ)](https://codecov.io/gh/elasthicc/pterodactyl-go)
+
 
 ![pterogo-maskot](media/pterogo_maskot.png)
 
