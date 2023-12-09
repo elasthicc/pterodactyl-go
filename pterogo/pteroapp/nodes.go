@@ -107,45 +107,23 @@ type NodeCreateOpts struct {
 }
 
 // Create creates a new node.
-func (a *NodeApplication) Create(ctx context.Context, opts NodeCreateOpts) (Node, *http.Response, error) {
-
-	url := a.application.endpoint + "nodes"
-	method := "POST"
+func (a *NodeApplication) Create(ctx context.Context, opts NodeCreateOpts) (*Node, *http.Response, error) {
 
 	jsonReq, err := json.Marshal(opts)
 	if err != nil {
-		return Node{}, nil, err
+		return nil, nil, err
 	}
 
-	client := &http.Client{}
-	req, err := http.NewRequest(method, url, bytes.NewBuffer(jsonReq))
+	req, err := a.application.NewRequest(ctx, http.MethodPost, "nodes", bytes.NewBuffer(jsonReq))
 
+	body, resp, err := a.application.Do(req)
 	if err != nil {
-		return Node{}, nil, err
-	}
-
-	req.Header.Add("Accept", "application/json")
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", a.application.token))
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return Node{}, nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != 200 {
-		return Node{}, resp, fmt.Errorf("%s", resp.Status)
-	}
-
-	bodyBytes, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return Node{}, nil, err
+		return nil, resp, err
 	}
 
 	var nodeResp Node
-	json.Unmarshal(bodyBytes, &nodeResp)
+	json.Unmarshal(body, &nodeResp)
 
-	return nodeResp, resp, nil
+	return &nodeResp, resp, nil
 
 }
