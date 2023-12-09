@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 )
 
@@ -81,32 +80,10 @@ type ServerApplication struct {
 
 // GetByID retrives the server by its ID.
 func (a *ServerApplication) GetByID(ctx context.Context, id int64) (*Server, *http.Response, error) {
-	url := a.application.endpoint + fmt.Sprintf("servers/%d", id)
 
-	method := "GET"
+	req, err := a.application.NewRequest(ctx, http.MethodGet, fmt.Sprintf("servers/%d", id), nil)
 
-	client := &http.Client{}
-	req, err := http.NewRequest(method, url, nil)
-
-	if err != nil {
-		return nil, nil, err
-	}
-
-	req.Header.Add("Accept", "application/json")
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", a.application.token))
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != 200 {
-		return nil, resp, fmt.Errorf("%s", resp.Status)
-	}
-
-	body, err := io.ReadAll(resp.Body)
+	body, resp, err := a.application.Do(req)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -138,43 +115,22 @@ type ServerCreateOpts struct {
 }
 
 // Create creates a new server.
-func (a *ServerApplication) Create(opts ServerCreateOpts) (Server, *http.Response, error) {
-	url := a.application.endpoint + "servers"
-	method := "POST"
+func (a *ServerApplication) Create(ctx context.Context, opts ServerCreateOpts) (*Server, *http.Response, error) {
 
 	jsonReq, err := json.Marshal(opts)
 	if err != nil {
-		return Server{}, nil, err
+		return nil, nil, err
 	}
 
-	client := &http.Client{}
-	req, err := http.NewRequest(method, url, bytes.NewBuffer(jsonReq))
+	req, err := a.application.NewRequest(ctx, http.MethodPost, "servers", bytes.NewBuffer(jsonReq))
 
+	body, resp, err := a.application.Do(req)
 	if err != nil {
-		return Server{}, nil, err
-	}
-
-	req.Header.Add("Accept", "application/json")
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", a.application.token))
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return Server{}, nil, err
-	}
-	defer resp.Body.Close()
-
-	bodyBytes, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return Server{}, nil, err
-	}
-
-	if resp.StatusCode != 201 {
-		return Server{}, resp, fmt.Errorf("%s", resp.Status)
+		return nil, resp, err
 	}
 
 	var serverResp Server
-	json.Unmarshal(bodyBytes, &serverResp)
+	json.Unmarshal(body, &serverResp)
 
-	return serverResp, resp, nil
+	return &serverResp, resp, nil
 }
