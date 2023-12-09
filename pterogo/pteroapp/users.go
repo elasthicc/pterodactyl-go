@@ -61,7 +61,7 @@ type UserCreateOpts struct {
 
 // Create creates a new user.
 func (a *UserApplication) Create(ctx context.Context, opts UserCreateOpts) (*User, *http.Response, error) {
-	//
+
 	jsonReq, err := json.Marshal(opts)
 	if err != nil {
 		return nil, nil, err
