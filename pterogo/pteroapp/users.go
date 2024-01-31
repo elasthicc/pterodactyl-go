@@ -67,7 +67,7 @@ func (a *UserApplication) GetByID(ctx context.Context, id int64) (*User, *http.R
 }
 
 // GetUserList returns all of the users.
-func (a *UserApplication) GetUserList(ctx context.Context) (*UsersList, *http.Response, error) {
+func (a *UserApplication) GetList(ctx context.Context) (*UsersList, *http.Response, error) {
 	req, err := a.application.NewRequest(ctx, http.MethodGet, "users", nil)
 
 	body, resp, err := a.application.Do(req)

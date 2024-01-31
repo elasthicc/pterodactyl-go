@@ -33,6 +33,39 @@ func TestUserAppGetByID(t *testing.T) {
 	}
 }
 
+func TestUserAppGetUserList(t *testing.T) {
+	env := newTestEnv()
+	defer env.Teardown()
+
+	fmt.Println(env.Application.endpoint)
+
+	env.Mux.HandleFunc("/api/application/users", func(w http.ResponseWriter, r *http.Request) {
+		testUserOne := User{}
+		testUserOne.Attributes.ID = 1
+
+		testUserTwo := User{}
+		testUserTwo.Attributes.ID = 2
+
+		testUserList := UsersList{}
+		testUserList.Users = append(testUserList.Users, testUserOne)
+		testUserList.Users = append(testUserList.Users, testUserTwo)
+
+		json.NewEncoder(w).Encode(testUserList)
+	})
+
+	ctx := context.Background()
+
+	userList, _, err := env.Application.Users.GetList(ctx)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(userList.Users) != 2 {
+		t.Errorf("unexpected number of users in: %v", userList)
+	}
+}
+
 func TestUserAppCreate(t *testing.T) {
 	env := newTestEnv()
 	defer env.Teardown()
