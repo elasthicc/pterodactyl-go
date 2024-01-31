@@ -27,6 +27,21 @@ type User struct {
 	} `json:"attributes"`
 }
 
+type UsersList struct {
+	Object string `json:"object"`
+	Users  []User `json:"data"`
+	Meta   struct {
+		Pagination struct {
+			Total       int      `json:"total"`
+			Count       int      `json:"count"`
+			PerPage     int      `json:"per_page"`
+			CurrentPage int      `json:"current_page"`
+			TotalPages  int      `json:"total_pages"`
+			Links       struct{} `json:"links"`
+		} `json:"pagination"`
+	} `json:"meta"`
+}
+
 // UsersApplication is a client for the Users Pterodactyl API.
 type UserApplication struct {
 	application *Application
@@ -49,6 +64,24 @@ func (a *UserApplication) GetByID(ctx context.Context, id int64) (*User, *http.R
 	}
 
 	return &userData, resp, nil
+}
+
+// GetUserList returns all of the users.
+func (a *UserApplication) GetList(ctx context.Context) (*UsersList, *http.Response, error) {
+	req, err := a.application.NewRequest(ctx, http.MethodGet, "users", nil)
+
+	body, resp, err := a.application.Do(req)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	var usersList UsersList
+	err = json.Unmarshal(body, &usersList)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return &usersList, resp, nil
 }
 
 // UserCreateOpts specifies options for creating a new user.
