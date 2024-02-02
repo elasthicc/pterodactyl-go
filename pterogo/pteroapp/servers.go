@@ -58,7 +58,8 @@ type ServerFeatureLimits struct {
 
 // ServerAllocation represents the allocation for a server.
 type ServerAllocation struct {
-	Default int `json:"default"`
+	Default               int   `json:"default"`
+	AdditionalAllocations []int `json:"additional"`
 }
 
 // ServerEnvironment represents the environment variables for a server.
@@ -100,18 +101,19 @@ func (a *ServerApplication) GetByID(ctx context.Context, id int64) (*Server, *ht
 
 // ServerCreateOpts represents the options for creating a new server.
 type ServerCreateOpts struct {
-	Name          string              `json:"name"`
-	User          int                 `json:"user"`
-	LocationID    int                 `json:"location_id"`
-	Node          int                 `json:"node"` //
-	Nest          int                 `json:"nest"` //
-	Egg           int                 `json:"egg"`
-	DockerImage   string              `json:"docker_image"`
-	Startup       string              `json:"startup"`
-	Environment   ServerEnvironment   `json:"environment"`
-	Limits        ServerLimits        `json:"limits"`
-	FeatureLimits ServerFeatureLimits `json:"feature_limits"`
-	Allocation    ServerAllocation    `json:"allocation"`
+	Name              string              `json:"name"`
+	User              int                 `json:"user"`
+	LocationID        int                 `json:"location_id"`
+	Node              int                 `json:"node"` //
+	Nest              int                 `json:"nest"` //
+	Egg               int                 `json:"egg"`
+	DockerImage       string              `json:"docker_image"`
+	Startup           string              `json:"startup"`
+	Environment       ServerEnvironment   `json:"environment"`
+	Limits            ServerLimits        `json:"limits"`
+	FeatureLimits     ServerFeatureLimits `json:"feature_limits"`
+	Allocation        ServerAllocation    `json:"allocation"`
+	StartOnCompletion bool                `json:"start_on_completion"`
 }
 
 // Create creates a new server.
