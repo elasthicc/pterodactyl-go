@@ -1,6 +1,7 @@
 package pteroapp
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -11,12 +12,12 @@ import (
 type Allocation struct {
 	Object     string `json:"object"`
 	Attributes struct {
-		ID       int         `json:"id"`
-		IP       string      `json:"ip"`
-		Alias    interface{} `json:"alias"`
-		Port     int         `json:"port"`
-		Notes    interface{} `json:"notes"`
-		Assigned bool        `json:"assigned"`
+		ID       int    `json:"id"`
+		IP       string `json:"ip"`
+		Alias    string `json:"alias"`
+		Port     int    `json:"port"`
+		Notes    string `json:"notes"`
+		Assigned bool   `json:"assigned"`
 	} `json:"attributes"`
 }
 
@@ -52,4 +53,26 @@ func (a *NodeApplication) ListAllocationsByID(ctx context.Context, id int) (*All
 	}
 
 	return &allocations, resp, nil
+}
+
+type AllocationCreateOpts struct {
+	IP    string   `json:"ip"`
+	Ports []string `json:"ports"`
+}
+
+func (a *NodeApplication) CreateAllocation(ctx context.Context, opts AllocationCreateOpts, nodeID int) (*http.Response, error) {
+
+	jsonReq, err := json.Marshal(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := a.application.NewRequest(ctx, http.MethodPost, fmt.Sprintf("nodes/%d/allocations", nodeID), bytes.NewBuffer(jsonReq))
+
+	_, resp, err := a.application.Do(req)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
 }
