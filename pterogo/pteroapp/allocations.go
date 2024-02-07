@@ -12,12 +12,12 @@ import (
 type Allocation struct {
 	Object     string `json:"object"`
 	Attributes struct {
-		ID       int    `json:"id"`
-		IP       string `json:"ip"`
-		Alias    string `json:"alias"`
-		Port     int    `json:"port"`
-		Notes    string `json:"notes"`
-		Assigned bool   `json:"assigned"`
+		ID       int     `json:"id"`
+		IP       string  `json:"ip"`
+		Alias    *string `json:"alias"`
+		Port     int     `json:"port"`
+		Notes    *string `json:"notes"`
+		Assigned bool    `json:"assigned"`
 	} `json:"attributes"`
 }
 
