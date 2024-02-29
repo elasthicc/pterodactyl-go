@@ -1,3 +1,7 @@
+[![Logo Image](https://static.wixstatic.com/media/2fced5_0e8439fd96084eeaab6606645eba6770~mv2.png)](https://elasthi.cc)
+
+[![Discord](https://img.shields.io/discord/1183675601790443530?style=for-the-badge&logo=Discord&logoColor=White&label=Discord&labelColor=white)](https://discord.gg/UsZfE5C8Vc)
+
 # pterogo: A Go library for the Pterodactyl API
 
 [![Test and coverage](https://github.com/elasthicc/pterodactyl-go/actions/workflows/codeql-analysis.yml/badge.svg?branch=main)](https://github.com/elasthicc/pterodactyl-go/actions/workflows/codeql-analysis.yml)
