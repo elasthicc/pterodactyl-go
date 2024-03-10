@@ -56,8 +56,9 @@ func (a *NodeApplication) ListAllocationsByID(ctx context.Context, id int) (*All
 }
 
 type AllocationCreateOpts struct {
-	IP    string   `json:"ip"`
-	Ports []string `json:"ports"`
+	IP      string   `json:"ip"`
+	Ports   []string `json:"ports"`
+	IpAlias string   `json:"alias"`
 }
 
 func (a *NodeApplication) CreateAllocation(ctx context.Context, opts AllocationCreateOpts, nodeID int) (*http.Response, error) {
@@ -68,6 +69,10 @@ func (a *NodeApplication) CreateAllocation(ctx context.Context, opts AllocationC
 	}
 
 	req, err := a.application.NewRequest(ctx, http.MethodPost, fmt.Sprintf("nodes/%d/allocations", nodeID), bytes.NewBuffer(jsonReq))
+
+	if err != nil {
+		return nil, err
+	}
 
 	_, resp, err := a.application.Do(req)
 	if err != nil {
