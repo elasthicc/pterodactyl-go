@@ -74,6 +74,7 @@ type NodeCreateOpts struct {
 	LocationID         int    `json:"location_id"`
 	FQDN               string `json:"fqdn"`
 	Scheme             Scheme `json:"scheme"`
+	BehindProxy        bool   `json:behind_proxy`
 	Memory             int    `json:"memory"`
 	MemoryOverallocate int    `json:"memory_overallocate"`
 	Disk               int    `json:"disk"`
